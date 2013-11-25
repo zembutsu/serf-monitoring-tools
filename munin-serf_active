@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# Plugin to monitor serf members counter
+
+#%# family=auto
+#%# capabilities=autoconf
+
+if [ "$1" = "autoconf" ]; then
+        echo yes
+        exit 0
+fi
+
+if [ "$1" = "config" ] ; then
+        echo "graph_args -r --lower-limit 0 ";
+        echo "graph_title Serf active nodes";
+        echo "graph_category serf";
+        echo "graph_info counter ofserf active noces";
+        echo 'graph_vlabel node'
+
+        echo "active.label active"
+        echo "active.draw LINE2"
+        echo "active.type GAUGE"
+        exit
+fi
+
+echo -n 'active.value '
+/usr/local/bin/serf members | awk {'print $3'} | grep 'alive' | wc -w
+
+
